@@ -8,6 +8,7 @@ interface NewsItem {
   link?: string;
   pubDate?: string;
   source?: string;
+  summary?: string
 }
 
 const cache = new LRUCache<string, NewsItem[]>({
@@ -30,10 +31,11 @@ export async function GET() {
     );
 
     const news: NewsItem[] = feed.items.map((item) => ({
-      title: item.title,
-      link: item.link,
-      pubDate: item.pubDate,
-      source: (item as { source?: { "#text"?: string } }).source?.["#text"] || "Google News",
+      title: item?.title,
+      link: item?.link,
+      pubDate: item?.pubDate,
+      source: "Google News",
+      summary: item?.contentSnippet
     }));
 
     cache.set(cacheKey, news);

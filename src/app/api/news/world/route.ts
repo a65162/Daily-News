@@ -8,6 +8,7 @@ interface NewsItem {
   link?: string;
   pubDate?: string;
   source?: string;
+  summary?: string
 }
 
 const cache = new LRUCache<string, NewsItem[]>({
@@ -26,15 +27,17 @@ export async function GET() {
   try {
     // Updated Google News RSS for World (International)
     // Using the generic section URL which redirects to the current valid topic ID
+    // Set to English (US) to fetch international news in English
     const worldFeed = await parser.parseURL(
-      "https://news.google.com/rss/headlines/section/topic/WORLD?hl=zh-TW&gl=TW&ceid=TW:zh-Hant"
+      "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-US&gl=US&ceid=US:en"
     );
 
     const news: NewsItem[] = worldFeed.items.map((item) => ({
-      title: item.title,
-      link: item.link,
-      pubDate: item.pubDate,
-      source: (item as { source?: { "#text"?: string } }).source?.["#text"] || "Google News",
+      title: item?.title,
+      link: item?.link,
+      pubDate: item?.pubDate,
+      source: "Google News",
+      summary: item?.contentSnippet
     }));
 
     cache.set(cacheKey, news);
