@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface NewsItem {
   title: string;
@@ -16,7 +16,7 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState("taiwan");
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(false);
-
+  const latestTimestamp = useRef<number | null>(null)
   const tabs = [
     { id: "taiwan", name: "台灣新聞" },
     { id: "world", name: "國際新聞" },
@@ -24,11 +24,18 @@ export default function Home() {
     { id: "tech", name: "科技新聞" },
   ];
 
+
   const fetchNews = async (tabId: string) => {
+    const now = new Date().valueOf()
+    latestTimestamp.current = now
     setLoading(true);
+
+
     try {
       const res = await fetch(`/api/news/${tabId}`);
       const data = await res.json();
+
+      if (latestTimestamp.current !== now) return
       if (Array.isArray(data)) {
         setNews(data);
       } else {
@@ -38,9 +45,9 @@ export default function Home() {
       console.error("Failed to fetch news:", error);
       setNews([]);
     } finally {
-      setLoading(false);
+      setLoading(latestTimestamp.current !== now)
     }
-  };
+  }
 
   useEffect(() => {
     fetchNews(activeTab);
@@ -59,7 +66,7 @@ export default function Home() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-6 py-2 rounded-full font-medium transition-colors ${
+              className={`px-6 py-2 rounded-full font-medium transition-colors cursor-pointer ${
                 activeTab === tab.id
                   ? "bg-blue-600 text-white"
                   : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
