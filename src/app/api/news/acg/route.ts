@@ -3,11 +3,11 @@ import * as cheerio from "cheerio";
 import { LRUCache } from "lru-cache";
 
 interface ACGNewsItem {
-  title: string;
-  link: string;
-  author: string;
-  date: string;
-  summary: string;
+  title?: string;
+  link?: string;
+  author?: string;
+  date?: string;
+  summary?: string;
 }
 
 const cache = new LRUCache<string, ACGNewsItem[]>({
