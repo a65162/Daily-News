@@ -14,39 +14,41 @@
 
 ### 3.1 新聞聚合 (News Aggregation)
 
-系統需支援以下四類新聞來源的抓取與顯示：
+系統需支援以下類別新聞來源的抓取與顯示：
 
 #### A. 台灣新聞 (Taiwan News)
 
-- **來源**：Google News RSS (台灣版) 或 Yahoo News RSS。
-- **顯示欄位**：標題、發布時間、來源媒體、原始連結。
+- **來源**：Google News RSS（台灣版）。
+- **顯示欄位**：標題、發布時間、來源媒體、原始連結、摘要（contentSnippet）。
 
 #### B. 國際新聞 (International News)
 
-- **來源**：Google News RSS (國際版/World) 或 BBC 中文網。
-- **顯示欄位**：標題、發布時間、來源媒體、原始連結。
+- **來源**：Google News RSS（World，英文版）。
+- **顯示欄位**：標題、發布時間、來源媒體、原始連結、摘要（contentSnippet）。
 
 #### C. 動漫資訊 (Animation Info)
 
-- **來源**：巴哈姆特哈啦板 (動漫綜合版) `https://forum.gamer.com.tw/B.php?bsn=60037`
+- **來源**：巴哈姆特哈啦板（動漫綜合版）`https://forum.gamer.com.tw/B.php?bsn=60037`
 - **抓取邏輯**：
-  - 解析 HTML，提取列表中的文章標題。
-  - 過濾置頂公告（可選）。
-- **顯示欄位**：標題、作者、發布時間、連結。
+  - 解析 HTML，提取列表中的文章標題、作者、時間與簡述。
+  - 過濾置頂公告（b-list\_\_row--sticky）。
+- **顯示欄位**：標題、作者、發布時間、摘要、連結。
 
 #### D. 科技新聞 (Technology News)
 
 - **來源**：
-  1.  **iThome**: `https://www.ithome.com.tw` (抓取最新新聞列表)
-  2.  **4Gamers**: `https://www.4gamers.com.tw/news` (抓取最新消息)
-  3.  **掘金 (Juejin)**: `https://e.juejin.cn` (抓取熱門或推薦文章)
-- **顯示欄位**：標題、摘要（若有）、來源網站、連結。
+  1. **iThome**：`https://www.ithome.com.tw`（最新新聞列表）
+  2. **4Gamers**：`https://www.4gamers.com.tw`（API 最新消息）
+  3. **掘金 (Juejin)**：`https://api.juejin.cn`（推薦文章 API）
+- **顯示欄位**：標題、摘要（若有）、來源網站、發布日期、連結。
+- **備註**：目前 API 端點為三個來源分開提供（iThome、4Gamers、掘金）。
 
 ### 3.2 使用者介面 (User Interface)
 
-- **儀表板 (Dashboard)**：首頁包含四個區塊或分頁，分別對應上述四類新聞。
+- **儀表板 (Dashboard)**：首頁以 Tab 呈現 6 個分頁：台灣、國際、動漫、科技（iThome）、4Gamers、掘金。
 - **外部連結**：點擊新聞標題時，以新分頁開啟原始網頁。
 - **手動更新**：提供「重新整理」按鈕，強制重新抓取最新資料。
+- **狀態提示**：切換或刷新時顯示載入狀態。
 
 ### 3.3 AI 輔助功能 (AI Features - Reserved for V2)
 
@@ -60,7 +62,7 @@
 
 - **效能**：頁面載入速度應在 2 秒內（使用快取機制）。
 - **響應式**：支援 Desktop 與 Mobile 瀏覽。
-- **資料新鮮度**：預設快取時間為 5-10 分鐘，避免過度頻繁請求來源網站。
+- **資料新鮮度**：預設快取時間為 10 分鐘，避免過度頻繁請求來源網站。
 
 ## 5. 技術架構 (Technical Architecture)
 
@@ -73,11 +75,13 @@
   - `rss-parser`: 處理 RSS 來源。
   - `cheerio`: 處理 HTML 爬蟲。
   - `axios` / `fetch`: 發送 HTTP 請求。
-- **Database**: 無 (MVP 階段採用 In-Memory Cache 或無資料庫架構)。
+- **Cache**: In-memory LRU Cache (TTL 10 分鐘)
 
 ### 5.2 API Design
 
-- `GET /api/news/taiwan`: 回傳台灣新聞 JSON。
-- `GET /api/news/world`: 回傳國際新聞 JSON。
-- `GET /api/news/acg`: 回傳巴哈姆特爬蟲結果 JSON。
-- `GET /api/news/tech`: 回傳科技新聞聚合結果 JSON。
+- `GET /api/news/taiwan`：台灣新聞（RSS）。
+- `GET /api/news/world`：國際新聞（RSS）。
+- `GET /api/news/acg`：巴哈姆特爬蟲結果。
+- `GET /api/news/tech`：iThome 最新新聞。
+- `GET /api/news/4gamers`：4Gamers 最新消息。
+- `GET /api/news/juejin`：掘金推薦文章。
