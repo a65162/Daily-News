@@ -18,10 +18,12 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const latestTimestamp = useRef<number | null>(null)
   const tabs = [
-    { id: "taiwan", name: "台灣新聞" },
-    { id: "world", name: "國際新聞" },
-    { id: "acg", name: "動漫資訊" },
-    { id: "tech", name: "科技新聞" },
+    { id: "taiwan", name: "Taiwan News" },
+    { id: "world", name: "World News" },
+    { id: "acg", name: "Anime News" },
+    { id: "tech", name: "Tech News" },
+    { id: "4gamers", name: "4Gamers" },
+    { id: "juejin", name: "Juejin" },
   ];
 
 
@@ -57,8 +59,8 @@ export default function Home() {
     <main className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         <header className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">每日新聞聚合</h1>
-          <p className="text-gray-600">一站式獲取您感興趣的所有資訊</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Daily News Aggregator</h1>
+          <p className="text-gray-600">Get all the information you care about in one place</p>
         </header>
 
         <div className="flex flex-wrap justify-center gap-2 mb-8">
@@ -78,7 +80,7 @@ export default function Home() {
           <button
             onClick={() => fetchNews(activeTab)}
             className="ml-auto p-2 text-gray-500 hover:text-blue-600 transition-colors"
-            title="重新整理"
+            title="Refresh"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -101,7 +103,7 @@ export default function Home() {
           {loading ? (
             <div className="text-center py-12">
               <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-600 border-t-transparent"></div>
-              <p className="mt-2 text-gray-500">正在抓取最新新聞...</p>
+              <p className="mt-2 text-gray-500">Fetching the latest news...</p>
             </div>
           ) : news.length > 0 ? (
             news.map((item, index) => (
@@ -124,7 +126,7 @@ export default function Home() {
                         {item.source}
                       </span>
                     )}
-                    {item.author && <span>作者: {item.author}</span>}
+                    {item.author && <span>Author: {item.author}</span>}
                     {item.pubDate && <span>{new Date(item.pubDate).toLocaleString()}</span>}
                     {!item.pubDate && item.date && <span>{item.date}</span>}
                   </div>
@@ -136,7 +138,7 @@ export default function Home() {
             ))
           ) : (
             <div className="text-center py-12 bg-white rounded-xl border border-dashed border-gray-300">
-              <p className="text-gray-500">目前沒有新聞資料</p>
+              <p className="text-gray-500">No news available at the moment</p>
             </div>
           )}
         </div>
