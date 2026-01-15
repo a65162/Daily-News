@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Daily News Aggregator
 
-## Getting Started
+A personal daily news aggregator web app that brings together Taiwan, international, animation, and tech news in one clean, fast, and up-to-date reading experience. Built with **Next.js (App Router)**, it fetches data through **API Routes**, caches responses, and uses **Tailwind CSS** for a responsive interface—great for portfolio showcase.
 
-First, run the development server:
+## Highlights
+
+- **Six tabs dashboard**: Taiwan, World, ACG, Tech (iThome), 4Gamers, Juejin.
+- **Manual refresh**: One-click refresh to fetch the latest data.
+- **Caching**: Default 10-minute in-memory LRU cache for speed and freshness.
+- **Minimal UI**: Distraction-free reading experience for quick daily browsing.
+
+## Tech Stack
+
+- **Frontend**: Next.js (App Router)
+- **Styling**: Tailwind CSS
+- **Backend / API**: Next.js API Routes
+- **Data Fetching**: rss-parser / cheerio / fetch
+- **Cache**: In-memory LRU cache (TTL 10 minutes)
+
+## Data Sources
+
+| Category        | Source                   | Content                            | Method        |
+| --------------- | ------------------------ | ---------------------------------- | ------------- |
+| Taiwan News     | Google News RSS (Taiwan) | Title, time, source, link, snippet | RSS parsing   |
+| World News      | Google News RSS (World)  | Title, time, source, link, snippet | RSS parsing   |
+| Animation (ACG) | Bahamut forum board      | Title, author, time, snippet, link | HTML scraping |
+| Tech (iThome)   | iThome latest news       | Title, snippet, source, date, link | HTML scraping |
+| Tech (4Gamers)  | 4Gamers latest news API  | Title, snippet, source, date, link | API fetch     |
+| Tech (Juejin)   | Juejin recommended API   | Title, snippet, source, date, link | API fetch     |
+
+## Core Features
+
+- **Dashboard**: Six tabs for each news category/source.
+- **External links**: Open original articles in a new tab.
+- **Manual refresh**: Force-fetch the latest data.
+- **Loading state**: Visible status during tab changes and refresh.
+
+## API Endpoints
+
+- `GET /api/news/taiwan`: Taiwan news (RSS)
+- `GET /api/news/world`: World news (RSS)
+- `GET /api/news/acg`: ACG news (Bahamut)
+- `GET /api/news/tech`: iThome tech news
+- `GET /api/news/4gamers`: 4Gamers latest news
+- `GET /api/news/juejin`: Juejin recommended articles
+
+## Local Development
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open the browser at:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Roadmap (V2)
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **On-demand summarization**: 3-point summary for each article.
+- **Translation**: Auto-translate non-Chinese content.
