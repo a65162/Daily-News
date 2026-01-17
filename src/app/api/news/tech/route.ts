@@ -21,7 +21,7 @@ async function fetchIThome() {
   });
   const $ = cheerio.load(data);
   const items: NewsItem[] = [];
-  $(".view-latest-news .view-content .item").each((_, el) => {
+  $(".view-latest-news > .view-content > .item").each((_, el) => {
     const title = $(el).find(".title a").text().trim();
     const link = "https://www.ithome.com.tw" + $(el).find(".title a").attr("href");
     const summary = $(el).find(".summary").text().trim();
